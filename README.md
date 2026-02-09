@@ -2,8 +2,6 @@
 
 A sleek, portable macOS application that automates system cleanup via a simple double-click.
 
-![App Icon](Cleaner.app/Contents/Resources/AppIcon.icns)
-
 ## Features
 
 - **ML Cache Cleaning**: Removes caches from `~/.cache`, `~/.keras`, etc.
