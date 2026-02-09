@@ -1,0 +1,12 @@
+#!/bin/bash
+# Get the directory where the bundle is located
+APP_CONTENTS_PATH="$(dirname "$(dirname "$0")")"
+SCRIPT_PATH="$APP_CONTENTS_PATH/Resources/clean_storage.sh"
+
+# Use AppleScript to tell Terminal to run the script
+osascript <<EOF
+tell application "Terminal"
+    activate
+    do script "bash '$SCRIPT_PATH'"
+end tell
+EOF
