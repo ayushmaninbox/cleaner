@@ -2,15 +2,16 @@
 
 echo "🚀 Starting comprehensive cleanup..."
 
-# 1. Safety First: User-requested Exclusions (Spotify & Brave)
-echo "🛡️ Preserving Spotify and Brave data..."
-# We will use this list to exclude folders in the general cache cleanup
+# 1. Safety First: User-requested Exclusions (Spotify & Comet)
+echo "🛡️ Preserving Spotify and Comet data..."
+# Brave is no longer excluded as per user request.
+# Comet is now strictly protected.
 
 # 2. System Caches (with Exclusions)
-echo "🧹 Cleaning System Caches (excluding Spotify & Brave)..."
-if [ -d "~/Library/Caches" ]; then
-    # Delete everything in ~/Library/Caches EXCEPT Spotify and Brave
-    find ~/Library/Caches -mindepth 1 -maxdepth 1 ! -name "*spotify*" ! -name "*BraveSoftware*" -exec rm -rf {} +
+echo "🧹 Cleaning System Caches (excluding Spotify & Comet)..."
+if [ -d "$HOME/Library/Caches" ]; then
+    # Delete everything in ~/Library/Caches EXCEPT Spotify and Comet
+    find "$HOME/Library/Caches" -mindepth 1 -maxdepth 1 ! -name "*spotify*" ! -name "*Comet*" -exec rm -rf {} +
 fi
 
 # 3. Developer Tools (The BIG storage hogs)
@@ -50,23 +51,39 @@ rm -rf ~/.Trash/*
 rm -rf ~/Library/Containers/com.apple.mail/Data/Library/Mail\ Downloads/*
 rm -rf ~/Library/Caches/com.apple.QuickLookDaemon.Cache
 
-# 7. ML & Python (requested earlier)
+# 7. ML & Python
 echo "🤖 Cleaning ML and Python caches..."
 rm -rf ~/.cache
 rm -rf ~/.keras
 rm -rf ~/Library/Python
 
-# 8. Package Managers
+# 8. Package Managers & Build Tools
+echo "📦 Pruning Package Manager caches..."
+if command -v npm &> /dev/null; then
+    echo "   - npm cache clean..."
+    npm cache clean --force
+fi
+
+if command -v yarn &> /dev/null; then
+    echo "   - yarn cache clean..."
+    yarn cache clean
+fi
+
 if command -v pnpm &> /dev/null; then
-    echo "📦 Pruning pnpm store..."
+    echo "   - pnpm store prune..."
     pnpm store prune
 fi
 
 if command -v brew &> /dev/null; then
-    echo "🍺 Cleaning Homebrew..."
+    echo "   - Homebrew cleanup..."
     brew cleanup -s
     rm -rf "$(brew --cache)"
 fi
 
-echo "✨ Cleanup complete! Some files may require a restart to be fully cleared."
+# 9. Docker (Safe Prune)
+if command -v docker &> /dev/null; then
+    echo "🐳 Pruning unused Docker data..."
+    docker system prune -f --volumes
+fi
 
+echo "✨ Cleanup complete! Some files may require a restart to be fully cleared."
